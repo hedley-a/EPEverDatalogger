@@ -1,14 +1,11 @@
-# EPEver2MQTT  [![GitHub release](https://img.shields.io/github/release/softwarecrash/EPEver2MQTT?include_prereleases=&sort=semver&color=blue)](https://github.com/softwarecrash/EPEver2MQTT/releases/latest) [![Discord](https://img.shields.io/discord/1007020337482973254?logo=discord&label=Discord)](https://discord.gg/Hup3gg4YsN)
+# EPEverDatalogger  [![GitHub release](https://img.shields.io/github/release/softwarecrash/EPEver2MQTT?include_prereleases=&sort=semver&color=blue)](https://github.com/softwarecrash/EPEver2MQTT/releases/latest) [![Discord](https://img.shields.io/discord/1007020337482973254?logo=discord&label=Discord)](https://discord.gg/Hup3gg4YsN)
 ESP82XX to MQTT based connector for EPEver Solar tracker, support multiple trackers
 
 # Features:
 - set up over captive portal
 - Config in webinterface
-- [Multiple Device Support](https://github.com/softwarecrash/EPEver2MQTT/wiki/Multi-Device-Tutorial)
 - Firmware update via webinterface
-- MQTT Datapoints or Json String over MQTT
 - get Json over web at /livejson
-- switch Load Channel via webinterface and MQTT
 - set Device time from computer time
 - debug over WebSerial (no need to connect to a PC with a FTDI-Adapter)
 - with Teapod
