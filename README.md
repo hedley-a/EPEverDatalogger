@@ -5,7 +5,6 @@ ESP82XX to MQTT based connector for EPEver Solar tracker, support multiple track
 - set up over captive portal
 - Config in webinterface
 - Firmware update via webinterface
-- get Json over web at /livejson
 - set Device time from computer time
 - debug over WebSerial (no need to connect to a PC with a FTDI-Adapter)
 - with Teapod
