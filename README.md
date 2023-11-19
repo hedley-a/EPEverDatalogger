@@ -9,9 +9,9 @@ ESP82XX based datalogger to EPEver Solar tracker
 - debug over WebSerial (no need to connect to a PC with a FTDI-Adapter)
 - with Teapod
 
-## ![grafik](https://user-images.githubusercontent.com/44615614/230722020-9ee2ef7e-0f98-4094-83f2-994f6211ecad.png)
-## ![grafik](https://user-images.githubusercontent.com/44615614/230722025-69865c5b-da78-4ed5-897f-6f1b389e878c.png)
-## ![grafik](https://user-images.githubusercontent.com/44615614/230722029-4481645d-6a2b-47da-9472-c2f1f49fc21e.png)
+![grafik](https://user-images.githubusercontent.com/44615614/![Main menu](https://github.com/hedley-a/EPEverDatalogger/assets/30367667/a847ab49-01aa-47ac-b780-41ef428c1dc6)
+230722020-9ee2ef7e-0f98-4094-83f2-994f6211ecad.png)
+![ConfigMenu](https://github.com/hedley-a/EPEverDatalogger/assets/30367667/cad77129-f822-4106-9a5c-b2173a2b23fd)
 
 
 # How to use:
