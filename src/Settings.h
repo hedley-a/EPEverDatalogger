@@ -1,140 +1,112 @@
-// Settings: Stores persistant settings, loads and saves to EEPROM
+#include "Arduino.h"
 
-#include <Arduino.h>
-#include <EEPROM.h>
+#ifndef config_settings_H_
+#define config_settings_H_
 
-#define EEPROM_SIZE 1024
+#define STR_HELPER(x) #x
+#define STR(x) STR_HELPER(x)
 
-class Settings
-{
-  // change eeprom config version ONLY when new parameter is added and need reset the parameter
-  unsigned int configVersion = 11;
+#ifndef DEVICE_NAME
+#define DEVICE_NAME "RS485-WiFi"
+#endif
+#ifndef SW_VERSION
+#define SW_VERSION 0.60
+#endif
+#ifndef DEVICE_DESCRIPTION
+  #define DEVICE_DESCRIPTION "EpEver Solar Monitor"
+#endif
 
-public:
-  String deviceNameStr;
-  struct Data
-  {                              // do not re-sort this struct
-    unsigned int coVers;         // config version, if changed, previus config will erased
-    char deviceName[40];         // device name
-    char mqttServer[40];         // mqtt Server adress
-    char mqttUser[40];           // mqtt Username
-    char mqttPassword[40];       // mqtt Password
-    char mqttTopic[40];          // mqtt publish topic
-    char mqttTriggerPath[80];    // MQTT Data Trigger Path
-    unsigned int mqttPort;       // mqtt port
-    unsigned int mqttRefresh;    // mqtt refresh time
-    unsigned int deviceQuantity; // Quantity of Devices
-    bool mqttJson;               // switch between classic mqtt and json
-    bool webUIdarkmode;          // Flag for color mode in webUI
-    char httpUser[40];           // http basic auth username
-    char httpPass[40];           // http basic auth password
-  } data;
+#ifndef DEVICE_MANUFACTURER
+  #define DEVICE_MANUFACTURER "EpEver"
+#endif
 
-  void load()
-  {
-    data = {}; // clear bevor load data
-    EEPROM.begin(EEPROM_SIZE);
-    EEPROM.get(0, data);
-    EEPROM.end();
-    coVersCheck();
-    sanitycheck();
-    deviceNameStr = data.deviceName;
-  }
 
-  void save()
-  {
-    sanitycheck();
-    EEPROM.begin(EEPROM_SIZE);
-    EEPROM.put(0, data);
-    EEPROM.commit();
-    EEPROM.end();
-  }
+#define DEVICE_FULL_NAME DEVICE_NAME " v" STR(SW_VERSION)
 
-  void reset()
-  {
-    data = {};
-    save();
-  }
+//Where in EEPROM do we store the configuration
+#define EEPROM_storageSize 2048
+#define EEPROM_WIFI_CHECKSUM_ADDRESS 0
+#define EEPROM_WIFI_CONFIG_ADDRESS EEPROM_WIFI_CHECKSUM_ADDRESS+sizeof(uint32_t)
 
-private:
-  // check the variables from eeprom
+#define EEPROM_CHECKSUM_ADDRESS 512
+#define EEPROM_CONFIG_ADDRESS EEPROM_CHECKSUM_ADDRESS+sizeof(uint32_t)
+/*
+#ifndef DEFAULT_MQTT_SERVER
+  #define DEFAULT_MQTT_SERVER   "192.168.0.254"
+#endif
+#ifndef DEFAULT_MQTT_USERNAME
+  #define DEFAULT_MQTT_USERNAME "username"
+#endif
+#ifndef DEFAULT_MQTT_PASSWORD
+  #define DEFAULT_MQTT_PASSWORD "password"
+#endif
+#ifndef DEFAULT_MQTT_TOPIC
+  #define DEFAULT_MQTT_TOPIC    "solar"
+#endif
+#ifndef DEFAULT_MQTT_PORT
+  #define DEFAULT_MQTT_PORT     1883
+#endif
 
-  void sanitycheck()
-  {
-    if (strlen(data.deviceName) == 0 || strlen(data.deviceName) >= 40)
-    {
-      strcpy(data.deviceName, "EPEver2MQTT");
-    }
-    if (strlen(data.mqttServer) == 0 || strlen(data.mqttServer) >= 40)
-    {
-      strcpy(data.mqttServer, "");
-    }
-    if (strlen(data.mqttUser) == 0 || strlen(data.mqttUser) >= 40)
-    {
-      strcpy(data.mqttUser, "");
-    }
-    if (strlen(data.mqttPassword) == 0 || strlen(data.mqttPassword) >= 40)
-    {
-      strcpy(data.mqttPassword, "");
-    }
-    if (strlen(data.mqttTopic) == 0 || strlen(data.mqttTopic) >= 40)
-    {
-      strcpy(data.mqttTopic, "EPEver");
-    }
-    if (data.mqttPort <= 0 || data.mqttPort >= 65530)
-    {
-      data.mqttPort = 0;
-    }
-    if (data.mqttRefresh <= 1 || data.mqttRefresh >= 65530)
-    {
-      data.mqttRefresh = 0;
-    }
-    if (data.mqttJson && !data.mqttJson)
-    {
-      data.mqttJson = false;
-    }
-    if (data.deviceQuantity < 1 || data.deviceQuantity >= 10)
-    {
-      data.deviceQuantity = 1;
-    }
-    if (strlen(data.mqttTriggerPath) == 0 || strlen(data.mqttTriggerPath) >= 80)
-    {
-      strcpy(data.mqttTriggerPath, "");
-    }
-    if (data.webUIdarkmode && !data.webUIdarkmode)
-    {
-      data.webUIdarkmode = false;
-    }
-    if (strlen(data.httpUser) == 0 || strlen(data.httpUser) >= 40)
-    {
-      strcpy(data.httpUser, "");
-    }
-    if (strlen(data.httpPass) == 0 || strlen(data.httpPass) >= 40)
-    {
-      strcpy(data.httpPass, "");
-    }
-  }
-  void coVersCheck()
-  {
-    if (data.coVers != configVersion)
-    {
-      data.coVers = configVersion;
-      strcpy(data.deviceName, "EPEver2MQTT");
-      strcpy(data.mqttServer, "");
-      strcpy(data.mqttUser, "");
-      strcpy(data.mqttPassword, "");
-      strcpy(data.mqttTopic, "EPEver");
-      strcpy(data.mqttTriggerPath, "");
-      data.deviceQuantity = 1;
-      data.mqttPort = 0;
-      data.mqttRefresh = 300;
-      data.mqttJson = false;
-      data.webUIdarkmode = false;
-      strcpy(data.httpUser, "");
-      strcpy(data.httpPass, "");
+#ifndef DEFAULT_INFLUXDB_HOST
+  #define DEFAULT_INFLUXDB_HOST      "192.168.0.254"
+#endif
+#ifndef DEFAULT_INFLUXDB_DATABASE
+  #define DEFAULT_INFLUXDB_DATABASE  "powerwall"
+#endif
+#ifndef DEFAULT_INFLUXDB_USER
+  #define DEFAULT_INFLUXDB_USER      "username"
+#endif
+#ifndef DEFAULT_INFLUXDB_PASSWORD
+  #define DEFAULT_INFLUXDB_PASSWORD  "PASSWORD"
+#endif
+#ifndef DEFAULT_INFLUXDB_PORT
+  #define DEFAULT_INFLUXDB_PORT      8086
+#endif
+*/
 
-      save();
-      load();
-    }
-  }
+//#ifndef DEFAULT_CONFIGPWD
+//  #define DEFAULT_CONFIGPWD      12345678
+//#endif
+
+#ifndef DEFAULT_DEVICE_ID
+  #define DEFAULT_DEVICE_ID      1
+#endif
+#ifndef DEFAULT_SERIAL_BAUD
+  #define DEFAULT_SERIAL_BAUD    115200
+#endif
+
+//We have allowed space for 2048-512 bytes of EEPROM for settings (1536 bytes)
+struct eeprom_settings { 
+/*
+  bool MQTT_Enable;
+  int  mqtt_port;
+  char mqtt_server[64 + 1];
+  char mqtt_username[64 + 1];
+  char mqtt_password[64 + 1];
+  char mqtt_topic[64 + 1];
+  
+  bool influxdb_enabled;
+  char influxdb_host[64 +1 ];
+  int  influxdb_httpPort;
+  char influxdb_database[32 + 1];
+  char influxdb_user[32 + 1];
+  char influxdb_password[32 + 1];
+  
+  bool HADiscovery_Enable;
+*/
+
+  int Device_ID;
+  int Device_BAUD;
 };
+
+extern char baseMacChr[13];
+extern eeprom_settings myConfig;
+extern bool isWrittingEEPROM;
+
+void WriteConfigToEEPROM();
+bool LoadConfigFromEEPROM();
+void WriteWIFIConfigToEEPROM();
+bool LoadWIFIConfigFromEEPROM();
+void FactoryResetSettings();
+
+#endif
