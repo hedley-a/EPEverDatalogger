@@ -1,7 +1,7 @@
 
 // Pins
-#define MAX485_DE         D2  // data or
-#define MAX485_RE         D1  // recv enable
+#define MAX485_DE         D2 // data or
+#define MAX485_RE         D1 // recv enable
 #define BellSwitchTrue    D6  // input -  
 #define ESP_busy          D5  // output - Flags WiFi GUI is running
 #define LED 15
